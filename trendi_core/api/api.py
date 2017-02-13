@@ -7,6 +7,7 @@ from ..tools import simple_pool
 import traceback
 from urlparse import urlparse
 from ..constants import db, redis_conn
+from img_class import img_object
 import img_relevancy
 from rq import Queue
 
@@ -48,10 +49,10 @@ def on_post(self, req, resp):
     valid_urls = []
     data_urls = []
     for image_url in image_urls:
-        im_type = url_sort(image_url)
-        if im_type == "data":
+        img = img_object(image_url, page_url, method)
+        if img.type == "data":
             data_urls.append(image_url)
-        elif im_type:
+        elif img.type:
             valid_urls.append(image_url)
 
     image_status_dict = {url: gevent.spawn(check_image_status, url, products_collection)
@@ -72,15 +73,6 @@ def on_post(self, req, resp):
     resp.data = json_util.dumps(ret)
     resp.content_type = 'application/json'
     resp.status = falcon.HTTP_200
-
-
-# Sorts image urls into "data", True (valid) or False (invalid)
-def url_sort(image_url):
-    if image_url[:4] == "data":
-        return 'data'
-    else:
-        return all(list(urlparse(image_url))[:3])
-
 
 def check_image_status(image_url, images_collection, products_collection, segmentation_method=None):
     image_obj = db[images_collection].find_one({'image_urls': image_url},
