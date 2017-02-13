@@ -46,17 +46,17 @@ def on_post(self, req, resp):
     # Catch the case where user provided image url instead of list
     image_urls = image_urls if isinstance(image_urls, list) else [image_urls]
     # Filter bad urls and split into data/valid groups
-    valid_urls = []
-    data_urls = []
+    valid_imgs = []
+    data_imgs = []
     for image_url in image_urls:
         img = img_object(image_url, page_url, method)
         if img.type == "data":
-            data_urls.append(image_url)
+            data_imgs.append(img)
         elif img.type:
-            valid_urls.append(image_url)
+            valid_imgs.append(img)
 
-    image_status_dict = {url: gevent.spawn(check_image_status, url, products_collection)
-                         for url in valid_urls}
+    image_status_dict = {img.url: gevent.spawn(check_image_status, img.url, products_collection)
+                         for img in valid_imgs}
     gevent.joinall(image_status_dict.values())
     image_status_dict = {url: green_status.value for url, green_status in image_status_dict.iteritems()}
     relevancy_dict = {url: map_to_client[method][status]
