@@ -54,7 +54,7 @@ def on_post(self, req, resp):
             data_imgs.append(img)
         elif img.type:
             valid_imgs.append(img)
-
+    # YONTI - continue inserting img_class
     image_status_dict = {img.url: gevent.spawn(check_image_status, img.url, products_collection)
                          for img in valid_imgs}
     gevent.joinall(image_status_dict.values())
