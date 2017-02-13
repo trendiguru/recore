@@ -60,12 +60,11 @@ def on_post(self, req, resp):
     relevancy_dict = {url: map_to_client[method][status]
                       for url, status in image_status_dict.iteritems()}
 
-    if method == 'nd':
-        urls_to_rel_check = (url for url, status in image_status_dict.iteritems() if status == ImageStatus.NEW)
-        # RELEVANCY CHECK LIOR'S POOLING
-        inputs = [(image_url, page_url, products_collection) for image_url in urls_to_rel_check]
-        outs = simple_pool.map(fast_results.check_if_relevant_and_enqueue, inputs)
-        relevancy_dict.update({images_to_rel_check[i]: outs[i] for i in xrange(len(images_to_rel_check))})
+    urls_to_rel_check = (url for url, status in image_status_dict.iteritems() if status == ImageStatus.NEW)
+    # RELEVANCY CHECK LIOR'S POOLING
+    inputs = [(image_url, page_url, products_collection, method) for image_url in urls_to_rel_check]
+    outs = simple_pool.map(fast_results.check_if_relevant_and_enqueue, inputs)
+    relevancy_dict.update({images_to_rel_check[i]: outs[i] for i in xrange(len(images_to_rel_check))})
 
     ret["relevancy_dict"] = relevancy_dict
 
