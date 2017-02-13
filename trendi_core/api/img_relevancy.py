@@ -39,6 +39,7 @@ def check_and_enqueue(image_url, page_url, products, method):
                                                ttl=2000, result_ttl=2000, timeout=2000)
         return True
     else:
+        # use gevent to parralelize
         if method != 'pd':
             return False
             
