@@ -2,10 +2,10 @@
 from urlparse import urlparse
 
 # ours libs
-from ...master_tools import imgUtils
+from ..master_tools import imgUtils
 
-
-class ImgObject(object):
+# TODO - add self.img_array
+class TrendiImage(object):
 
     def __init__(self, url, page_url, method):
         self.url = url
@@ -13,8 +13,9 @@ class ImgObject(object):
         self.segmentation_method = method
         self.type = self.url_sort()
         self.small_img_array = None
-        self.img_hash = None
+        self.hash = None
         self.label = None
+        self.status = False
 
     def get_img_by_url(self):
         image = imgUtils.get_cv2_img_array(self.url)
@@ -22,11 +23,11 @@ class ImgObject(object):
             small_img, _ = imgUtils.standard_resize(image, 600)
             self.small_img_array = small_img
 
-    def hash(self):
+    def hash_it(self):
         if self.small_img_array:
             self.img_hash = imgUtils.hash_image(self.small_img_array)
 
-    def labelize(self):
+    def label_it(self):
         img_or_url = self.small_img_array or self.url
         self.label = imgUtils.label_img(img_or_url)
 

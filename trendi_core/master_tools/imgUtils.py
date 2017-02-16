@@ -28,27 +28,62 @@ def label_img(image_or_url):
     except:
         return None
 
+# TODO - not finished yet
+def url_to_img_array(url):
+    if not isinstance(url, basestring):
+        logging.warning("input is neither an ndarray nor a string, so I don't know what to do")
+        return None
 
-#TODO - this function need to be reviewed!!!
+    # replace_https_with_http:
+    if 'http' in url and 'https' not in url:
+        url = url.replace("https", "http")
+        img_url = url_or_path_to_image_file_or_cv2_image_array
+        try:
+            # print("trying remotely (url) ")
+            headers = {'User-Agent': USER_AGENT}
+            response = requests.get(img_url, headers=headers)  # download
+            img_array = imdecode(np.asarray(bytearray(response.content)), 1)
+        except requests.ConnectionError:
+            logging.warning("connection error - check url or connection")
+            return None
+        except:
+            logging.warning(" error other than connection error - check something other than connection")
+            return None
+
+# TODO - not finished yet
+def path_to_img_array(path):
+    if not isinstance(path, basestring):
+        logging.warning("input is neither an ndarray nor a string, so I don't know what to do")
+        return None
+
+# TODO - not finished yet
+def download_img_array(img_array, download_path):
+    filename = \
+        url_or_path_to_image_file_or_cv2_image_array.split('/')[-1].split('#')[0].split('?')[-1].split(':')[-1]
+    filename = os.path.join(download_directory, filename)
+
+    if filename.endswith('jpg') or filename.endswith('jpeg') or filename.endswith('.bmp') or \
+        filename.endswith('tiff'):
+        pass
+    else:  # there's no 'normal' filename ending so add .jpg
+        filename = filename + '.jpg'
+
+#TODO - this function need to be divided to 3
 def get_cv2_img_array(url_or_path_to_image_file_or_cv2_image_array, convert_url_to_local_filename=False, download=False,
-                      download_directory='images', filename=False, replace_https_with_http=True):
+                      download_directory='images', replace_https_with_http=True):
     """
     Get a cv2 img array from a number of different possible inputs.
-
     :param url_or_path_to_image_file_or_cv2_image_array:
     :param convert_url_to_local_filename:
     :param download:
     :param download_directory:
     :return: img_array
     """
-    # print('get:' + str(url_or_path_to_image_file_or_cv2_image_array) + ' try local' + str(
-    # convert_url_to_local_filename) + ' download:' + str(download))
     got_locally = False
-    img_array = None  # attempt to deal with non-responding url
 
-    # first check if we already have a numpy array
-    if isinstance(url_or_path_to_image_file_or_cv2_image_array, np.ndarray):
-        img_array = url_or_path_to_image_file_or_cv2_image_array
+    # # first check if we already have a numpy array
+    # if isinstance(url_or_path_to_image_file_or_cv2_image_array, np.ndarray):
+    #     img_array = url_or_path_to_image_file_or_cv2_image_array
 
     # otherwise it's probably a string, check what kind
     elif isinstance(url_or_path_to_image_file_or_cv2_image_array, basestring):
@@ -59,15 +94,15 @@ def get_cv2_img_array(url_or_path_to_image_file_or_cv2_image_array, convert_url_
             # https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR2oSMcnwErH1eqf4k8fvn2bAxvSdDSbp6voC7ijYJStL2NfX6v
             # TODO: find a better way to create legal filename from url
             filename = \
-                url_or_path_to_image_file_or_cv2_image_array.split('/')[-1].split('#')[0].split('?')[-1].split(':')[
-                    -1]
+                url_or_path_to_image_file_or_cv2_image_array.split('/')[-1].split('#')[0].split('?')[-1].split(':')[-1]
             filename = os.path.join(download_directory, filename)
+
             if filename.endswith('jpg') or filename.endswith('jpeg') or filename.endswith('.bmp') or \
                     filename.endswith('tiff'):
                 pass
             else:  # there's no 'normal' filename ending so add .jpg
                 filename = filename + '.jpg'
-            # print('trying again locally using filename:' + str(filename))
+
             img_array = get_cv2_img_array(filename, convert_url_to_local_filename=False, download=download,
                                           download_directory=download_directory)
             # maybe return(get_cv2 etc) instead of img_array =
@@ -169,11 +204,9 @@ def get_cv2_img_array(url_or_path_to_image_file_or_cv2_image_array, convert_url_
     return img_array
 
 
-#TODO - this function need to be reviewed!!!
 def standard_resize(image, max_side):
-    original_w = image.shape[1]
-    original_h = image.shape[0]
-    if image.shape[0] < max_side and image.shape[1] < max_side:
+    original_h, original_w, _  = image.shape
+    if all(side < max_side for side in [original_h, original_w]):
         return image, 1
     aspect_ratio = float(np.amax((original_w, original_h))/float(np.amin((original_h, original_w))))
     resize_ratio = float(float(np.amax((original_w, original_h))) / max_side)
@@ -194,7 +227,6 @@ def hash_image(image):
     return url_hash
 
 
-#TODO - this function need to be reviewed!!!
 def find_face_using_dlib(image, max_num_of_faces=10):
     faces = detector(image, 1)
     faces = [[rect.left(), rect.top(), rect.width(), rect.height()] for rect in list(faces)]
@@ -204,7 +236,7 @@ def find_face_using_dlib(image, max_num_of_faces=10):
     return {'are_faces': len(final_faces) > 0, 'faces': final_faces}
 
 
-#TODO - this function need to be reviewed!!!
+# TODO - update function to yonatan's newest version
 def choose_faces(image, faces_list, max_num_of_faces):
     # in faces w = h, so biggest face will have the biggest h (we could also take w)
     biggest_face = 0
@@ -237,7 +269,7 @@ def choose_faces(image, faces_list, max_num_of_faces):
     return relevant_faces
 
 
-#TODO - this function need to be reviewed!!!
+# TODO - update function to yonatan's newest version
 def face_is_relevant(image, face):
     # (x,y) - left upper coordinates of the face, h - height of face, w - width of face
     # image relevant if:
@@ -247,40 +279,39 @@ def face_is_relevant(image, face):
     # - all face (height wise) is above the middle of the image
     # - if we see enough from the body - at least 5 "faces" (long) beneath the end of the face (y + h) - we'will need to delete this condition when we'll know to handle top part of body by its own
     # - skin pixels (according to our constants values) are more than third of all the face pixels
-    image_height, image_width, d = image.shape
+    image_height, image_width, _ = image.shape
     x, y, w, h = face
     # threshold = face + 5 faces down = 6 faces
     ycrcb = cv2.cvtColor(image, cv2.COLOR_BGR2YCR_CB)
     face_ycrcb = ycrcb[y:y + h, x:x + w, :]
     if (x > 0 or x + w < image_width or y > 0 or y + h < image_height) \
-            and 0.05 * image.shape[0] < h < 0.25 * image.shape[0] \
-            and y < (image.shape[0] / 2) - h \
-            and (image.shape[0] - (h * 5)) > (y + h) \
+            and 0.05 * image_height < h < 0.25 * image_height \
+            and y+h < (image_height / 2)  \
+            and (image_height - (h * 5)) > (y + h) \
             and is_skin_color(face_ycrcb):
         return True
     else:
         return False
 
-
-#TODO - this function need to be reviewed!!!
+# TODO : check if we actually need skin color test on faces???
 def is_skin_color(face_ycrcb):
     # return True if skin pixels (according to our constants values) are more
-    # than third of all the face pixels
-    h, w, d = face_ycrcb.shape
-    if not w*h:
+    # than a third of all the face pixels
+    h, w, _ = face_ycrcb.shape
+    total_pixels_count = w*h
+    if not total_pixels_count:
         return False
-    num_of_skin_pixels = 0
+    skin_pixels_count = 0
     for i in range(0, h):
         for j in range(0, w):
             cond = face_ycrcb[i][j][0] > 0 and 131 < face_ycrcb[i][j][1] < 180 and 80 < face_ycrcb[i][j][2] < 130
             if cond:
-                num_of_skin_pixels += 1
-    return num_of_skin_pixels / float(h * w) > 0.33
+                skin_pixels_count += 1
+    return skin_pixels_count / float(total_pixels_count) > 0.33
 
-
-#TODO - this function need to be reviewed!!!
+# TODO - update function to yonatan's newest version
 def score_face(face, image):
-    image_height, image_width, d = image.shape
+    image_height, image_width, _ = image.shape
     optimal_face_point = int(image_width / 2), int(0.125 * image_height)
     optimal_face_width = 0.1 * max(image_height, image_width)
     x, y, w, h = face
