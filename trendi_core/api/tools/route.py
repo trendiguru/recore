@@ -1,6 +1,9 @@
 # global libs
-from ..constants import products_per_ip_pid
 import maxminddb
+
+# out libs
+from ..constants import products_per_ip_pid
+
 
 geo_db_path = '/usr/local/lib/python2.7/dist-packages/maxminddb'
 geo_reader = maxminddb.open_database(geo_db_path + '/GeoLite2-Country.mmdb')
