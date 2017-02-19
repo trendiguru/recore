@@ -7,10 +7,9 @@ from rq import Queue
 
 from ..models.image_class import TrendiImage
 from .constants import ImageStatus
-from .tools import image_relevancy
 from .tools import route
-from .tools.image_relevancy import insert_irrelevant_to_mongo
-from .tools.image_status import check_image_status, map_to_client, add_col_or_renew_seg
+from .tools.status_and_relevancy import insert_irrelevant_to_mongo, check_relevancy_and_enqueue,\
+                                        check_image_status, map_to_client, add_col_or_renew_seg
 from ..master_constants import redis_conn
 from ..master_tools import simple_pool
 
@@ -55,11 +54,12 @@ def respond_when_ready(data, products_collection, method):
 
     # RELEVANCY CHECK LIOR'S POOLING
     inputs = [(img, products_collection) for img in imgs_to_rel_check]
-    final_batch_results = simple_pool.map(image_relevancy.check_and_enqueue, inputs)
+    final_batch_results = simple_pool.map(check_relevancy_and_enqueue, inputs)
     for img in final_batch_results:
         yield bytes('{},{}'.format(img.url, img.status))
 
     yield bytes('stop')  # TODO - sync with the frontend demands
+
     gevent.spawn(insert_irrelevant_to_mongo, final_batch_results)
     gevent.spawn(add_col_or_renew_seg, imgs_needing_extra_work, products_collection)
 
