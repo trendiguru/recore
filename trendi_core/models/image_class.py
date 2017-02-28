@@ -15,21 +15,23 @@ class TrendiImage(object):
         self.page_url = page_url
         self.segmentation_method = method
         self.type = self.url_sort()
-        self.data_array = None
+        self._data_array = None
         self.small_data_array = None
         self.small_data_mask = None
         self.hash = None
         self.p_hash = None
         self.label = None
         self.status = ImageStatus.NOT_RELEVANT
-        self.valid = True
+        self._is_valid = True
 
-    def get_img(self):
-        if self.data_array is None:
-            self.data_array = img_utils.url_to_img_array(self.url)
+    @property
+    def data_array(self):
+        if self._data_array is None:
+            self._data_array = img_utils.url_to_img_array(self.url)
             self.validate_it()
             if not self.valid:
                 logging.warning("image is None. url: {url}".format(url=self.url))
+        return self._data_array
 
     def url_sort(self):
         # Sorts image urls into "data", True (valid) or False (invalid)
@@ -60,12 +62,10 @@ class TrendiImage(object):
         if self.small_data_array is not None:
             self.small_data_mask = img_utils.create_mask_for_db(self.small_data_array)
 
-    def validate_it(self):
-        image_area = self.data_array.shape[0] * self.data_array.shape[1]
-        min_image_area = 400
-        if self.data_array is not None and \
-                isinstance(self.data_array, np.ndarray) and \
-                image_area >= min_image_area:
-            self.valid = True
-        else:
-            self.valid = False
+    @property
+    def is_valid(self):
+        min_image_area = 400 #TODO: consider moving this
+        if isinstance(self.data_array, np.ndarray):
+            image_area = self.data_array.shape[0] * self.data_array.shape[1]
+            self._is_valid = image_area >= min_image_area:
+        return self._is_valid
