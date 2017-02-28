@@ -10,6 +10,9 @@ import dlib
 import hashlib
 from functools import partial
 from jaweson import msgpack
+import Image
+from scipy import fftpack
+
 
 detector = dlib.get_frontal_face_detector()
 logging.basicConfig(level=logging.WARNING)
@@ -111,6 +114,31 @@ def hash_image(image):
     return url_hash
 
 
+def binary_array_to_hex(arr):
+    h = 0
+    s = []
+    for i, v in enumerate(arr.flatten()):
+        if v:
+            h += 2**(i % 8)
+        if (i % 8) == 7:
+            s.append(hex(h)[2:].rjust(2, '0'))
+            h = 0
+    return "".join(s)
+
+
+def p_hash_image(image, hash_size=16, img_size=16):
+    image = Image.fromarray(image)
+    image = image.convert("L").resize((img_size, img_size), Image.ANTIALIAS)
+    pixels = np.array(image.getdata(), dtype=np.float).reshape((img_size, img_size))
+    dct = fftpack.dct(fftpack.dct(pixels, axis=0), axis=1)
+    dctlowfreq = dct[:hash_size, :hash_size]
+    med = np.median(dctlowfreq)
+    diff = dctlowfreq > med
+    flat = diff.flatten()
+    hexa = binary_array_to_hex(flat)
+    return hexa
+
+
 def find_face_using_dlib(image, max_num_of_faces=10):
     faces = detector(image, 1)
     faces = [[rect.left(), rect.top(), rect.width(), rect.height()] for rect in list(faces)]
@@ -205,3 +233,27 @@ def score_face(face, image):
     size_score = abs((float(w) - optimal_face_width))
     total_score = 0.6 * positon_score + 0.4 * size_score
     return total_score
+
+
+def create_mask_for_db(image):
+    rect = (0, 0, image.shape[1]-1, image.shape[0]-1)
+    # this is  a cv2 initializing step as presented in the demo
+    bgdmodel = np.zeros((1, 65), np.float64)
+    fgdmodel = np.zeros((1, 65), np.float64)
+
+    mask = create_arbitrary_mask(image)
+    cv2.grabCut(image, mask, rect, bgdmodel, fgdmodel, 1, cv2.GC_INIT_WITH_RECT)
+
+    final_mask = np.where((mask == 1) + (mask == 3), 255, 0).astype(np.uint8)
+    return final_mask
+
+
+def create_arbitrary_mask(image):
+    h, w = image.shape[:2]
+    mask = np.zeros([h, w], dtype=np.uint8)
+    sub_h = h / 20
+    sub_w = w / 10
+    mask[2 * sub_h:18 * sub_h, 2 * sub_w:8 * sub_w] = 2
+    mask[4 * sub_h:16 * sub_h, 3 * sub_w:7 * sub_w] = 3
+    mask[7 * sub_h:13 * sub_h, 4 * sub_w:6 * sub_w] = 1
+    return mask

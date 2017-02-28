@@ -2,6 +2,8 @@
 # global libs
 import falcon
 import gevent
+from gevent.queue import Queue as geventQueue
+
 from bson import json_util
 from rq import Queue
 
@@ -11,57 +13,42 @@ from .tools import route
 from .tools.status_and_relevancy import insert_irrelevant_to_mongo, check_relevancy_and_enqueue,\
                                         check_image_status, map_to_client, add_col_or_renew_seg
 from ..master_constants import redis_conn
-from ..master_tools import simple_pool
 
 add_results = Queue('add_results', connection=redis_conn)
 application = falcon.API()
 
 
-def respond_when_ready(data, products_collection, method):
-
-    page_url = data.get("pageUrl", "NO_PAGE")
-    image_urls = data.get("imageList")
-    # Catch the case where user provided image url instead of list
-    image_urls = image_urls if isinstance(image_urls, list) else [image_urls]
-
-    # Filter bad urls and split into data/valid groups
-    valid_imgs = []
-    data_imgs = []   # TODO: handle data imgs
-    for image_url in image_urls:
-        img = TrendiImage(image_url, page_url, method)
-        if img.type == "data":
-            data_imgs.append(img)
-        elif img.type:
-            valid_imgs.append(img)
+def stop_stream_when_ready(q, images_in_process, products_collection):
+    gevent.joinall(images_in_process)
+    q.put(StopIteration)
+    irrelevant = []
+    extra_processing = []
+    for image in images_in_process:
+        if image.status == ImageStatus.NOT_RELEVANT:
+            irrelevant.append(image)
+        elif image.status == ImageStatus.ADD_COLLECTION or image.status == ImageStatus.RENEW_SEGMENTATION:
+            extra_processing.append(image)
         else:
-            yield bytes('{},{}'.format(img.url, img.status))
+            pass
 
-    image_status_list = [gevent.spawn(check_image_status, img, products_collection)
-                         for img in valid_imgs]
-    gevent.joinall(image_status_list)
+    gevent.spawn(insert_irrelevant_to_mongo, irrelevant)
+    gevent.spawn(add_col_or_renew_seg, extra_processing, products_collection)
 
-    imgs_to_rel_check = []
-    imgs_needing_extra_work = []
-    for gitem in image_status_list:
-        img = gitem.value
-        if img.status == ImageStatus.NEW:
-            imgs_to_rel_check.append(img)
-        else:
-            if img.status == ImageStatus.ADD_COLLECTION or img.status == ImageStatus.ADD_COLLECTION :
-                imgs_needing_extra_work.append(img)
-            img.status = map_to_client[img.method][img.status]
-            yield bytes('{},{}'.format(img.url, img.status))
 
-    # RELEVANCY CHECK LIOR'S POOLING
-    inputs = [(img, products_collection) for img in imgs_to_rel_check]
-    final_batch_results = simple_pool.map(check_relevancy_and_enqueue, inputs)
-    for img in final_batch_results:
-        yield bytes('{},{}'.format(img.url, img.status))
+def process_img(q, image, products_collection):
 
-    yield bytes('stop')  # TODO - sync with the frontend demands
+    if not image.type or image.type == 'data':  # TODO handle data images!!!!
+        q.put('{},{}'.format(image.url, image.status))
+        return image, ImageStatus.NOT_RELEVANT
 
-    gevent.spawn(insert_irrelevant_to_mongo, final_batch_results)
-    gevent.spawn(add_col_or_renew_seg, imgs_needing_extra_work, products_collection)
+    image, enum_status = check_image_status(image, products_collection)
+
+    if enum_status == ImageStatus.NEW:
+        image = check_relevancy_and_enqueue(image, products_collection)
+
+    status = map_to_client[image.method][image.status]
+    q.put('{},{}'.format(image.url, status))
+    return image
 
 
 class FalconServer:
@@ -69,16 +56,28 @@ class FalconServer:
         pass
 
     def on_post(self, req, resp):
+
         method = req.get_param("method") or 'nd'
         pid = req.get_param("pid") or 'default'
         products_collection = route.get_collection_from_ip_and_pid(req.env['REMOTE_ADDR'], pid)
 
         data = json_util.loads(req.stream.read())
+        page_url = data.get("pageUrl", "NO_PAGE")
+        image_url_list = data.get("imageList")
 
-        resp.content_type = "application/json"
+        # Catch the case where user provided image url instead of list
+        image_url_list = image_url_list if isinstance(image_url_list, list) else [image_url_list]
+        images = [TrendiImage(image_url, page_url, method) for image_url in image_url_list]
+
+        resp.content_type = 'text/html'
         resp.set_header('Access-Control-Allow-Origin', "*")
-        resp.append_header('transfer-encoding', 'chunked')
-        resp.stream = respond_when_ready(data, products_collection, method)
+
+        q = geventQueue()
+        q.put(' ' * 1024)
+        images_in_process = [gevent.spawn(process_img, q, image, products_collection) for image in images]
+        gevent.spawn(stop_stream_when_ready, q, images_in_process)
+        resp.stream = q
+
         resp.status = falcon.HTTP_200
 
 

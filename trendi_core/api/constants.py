@@ -1,9 +1,3 @@
-def enum(*sequential, **named):
-    enums = dict(zip(sequential, range(len(sequential))), **named)
-    return type('Enum', (), enums)
-
-ImageStatus = enum('NEW', 'ADD_COLLECTION', 'RENEW_SEGMENTATION', 'IN_PROGRESS', 'READY', 'NOT_RELEVANT')
-
 ImagesCollection = 'images'
 
 SegmentationMethod = 'pd'

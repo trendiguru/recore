@@ -5,10 +5,10 @@ from rq import push_connection, Queue
 import collections
 
 # ours
-from ...master_tools import imgUtils
+from ...master_tools import img_utils
 from ... import master_constants
-from ..constants import ImageStatus, ImagesCollection, SegmentationMethod
-from ...master_constants import db, redis_conn
+from ..constants import ImagesCollection, SegmentationMethod
+from ...master_constants import db, redis_conn, ImageStatus
 
 
 push_connection(redis_conn)
@@ -41,14 +41,10 @@ def check_image_status(image, products_collection, images_collection=ImagesColle
                                                {'people.items.similar_results': 1})
     if image_obj:
         if products_collection in image_obj['people'][0]['items'][0]['similar_results'].keys():
-            # TODO: Rethink "method" structure
-            if not segmentation_method:
-                if has_sufficient_segmentation(image_obj, segmentation_method):
-                    image.status = ImageStatus.RENEW_SEGMENTATION
-                    return image
-
             image.status = ImageStatus.READY
-            return image
+            if not segmentation_method:
+                if not has_sufficient_segmentation(image_obj, segmentation_method):
+                    image.status = ImageStatus.RENEW_SEGMENTATION
         else:
             image.status = ImageStatus.ADD_COLLECTION
     elif db.iip.find_one({'image_urls': image.url}, {'_id': 1}):
@@ -57,11 +53,13 @@ def check_image_status(image, products_collection, images_collection=ImagesColle
         image.status = ImageStatus.NOT_RELEVANT
     else:
         image.status = ImageStatus.NEW
+
     return image
 
 
 def check_relevancy_and_enqueue(img, products):
     img.get_img()
+    img.resize_it()
 
     relevance = image_is_relevant(img.small_data_array)
 
@@ -75,10 +73,10 @@ def check_relevancy_and_enqueue(img, products):
         else:
             start_synced_pipeline.enqueue_call(func="", args=(img.page_url, img.url, products, 'nd'),
                                                ttl=2000, result_ttl=2000, timeout=2000)
-        img.status = True
+        img.status = ImageStatus.IN_PROGRESS
 
     else:
-        img.status = False
+        img.status = ImageStatus.NOT_RELEVANT
 
     return img
 
@@ -111,7 +109,7 @@ def image_is_relevant(image):
     - "for face in image_is_relevant(image).faces:"
     """
     Relevance = collections.namedtuple('Relevance', ['is_relevant', 'faces'])
-    faces_dict = imgUtils.find_face_using_dlib(image, 4)
+    faces_dict = img_utils.find_face_using_dlib(image, 4)
 
     if not faces_dict['are_faces']:
         return Relevance(False, [])
