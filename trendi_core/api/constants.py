@@ -1,6 +1,5 @@
-ImagesCollection = 'images'
+from ..master_constants import ImageStatus
 
-SegmentationMethod = 'pd'
 
 products_per_ip_pid = {'default':
                            {'default': 'amazon_US', 'US': 'amazon_US', 'KR': 'GangnamStyle', 'DE': 'amazon_DE'},
@@ -33,3 +32,19 @@ products_per_ip_pid = {'default':
                        "2Ldy4i23piqQG73n":
                            {'default': 'shopstyle_DE'}}
 
+map_to_client = {"nd":
+                     {ImageStatus.NEW_RELEVANT: False,
+                      ImageStatus.NEW_NOT_RELEVANT: False,
+                      ImageStatus.ADD_COLLECTION: False,
+                      ImageStatus.RENEW_SEGMENTATION: True,
+                      ImageStatus.IN_PROGRESS: True,
+                      ImageStatus.READY: True,
+                      ImageStatus.NOT_RELEVANT: False},
+                 "pd":
+                     {ImageStatus.NEW_RELEVANT: False,
+                      ImageStatus.NEW_NOT_RELEVANT: False,
+                      ImageStatus.ADD_COLLECTION: False,
+                      ImageStatus.RENEW_SEGMENTATION: True,
+                      ImageStatus.IN_PROGRESS: False,
+                      ImageStatus.READY: True,
+                      ImageStatus.NOT_RELEVANT: False}}

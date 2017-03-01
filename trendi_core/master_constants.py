@@ -19,6 +19,9 @@ else:
 
 redis_limit = 5000
 
-fingerprint_version = 792015  # DayMonthYear
+fingerprint_version = '07/09/2015'  # TODO - change all our docs to the dd/mm/yyyy format
 
-ImageStatus = enum('NEW', 'ADD_COLLECTION', 'RENEW_SEGMENTATION', 'IN_PROGRESS', 'READY', 'NOT_RELEVANT')
+ImageStatus = enum('NEW_RELEVENT', 'NEW_NOT_RELEVANT', 'ADD_COLLECTION', 'RENEW_SEGMENTATION',
+                   'IN_PROGRESS', 'READY', 'IRRELEVANT')
+
+IMAGES_COLLECTION = 'images'

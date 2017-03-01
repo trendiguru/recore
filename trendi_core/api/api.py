@@ -1,50 +1,42 @@
 # -*- coding: utf-8 -*-
+
 # global libs
 import falcon
 import gevent
 from gevent.queue import Queue as geventQueue
-
 from bson import json_util
-from rq import Queue
-
 from ..models.image_class import TrendiImage
-from .constants import ImageStatus
+from ..master_constants import ImageStatus as IS
 from .tools import route
-from .tools.status_and_relevancy import insert_irrelevant_to_mongo, check_relevancy_and_enqueue,\
-                                        check_image_status, map_to_client, add_col_or_renew_seg
-from ..master_constants import redis_conn
+from .tools.extra_processing import continue_processing
+from .constants import map_to_client
 
-add_results = Queue('add_results', connection=redis_conn)
+
 application = falcon.API()
 
 
 def stop_stream_when_ready(q, images_in_process, products_collection):
+
     gevent.joinall(images_in_process)
     q.put(StopIteration)
-    irrelevant = []
-    extra_processing = []
-    for image in images_in_process:
-        if image.status == ImageStatus.NOT_RELEVANT:
-            irrelevant.append(image)
-        elif image.status == ImageStatus.ADD_COLLECTION or image.status == ImageStatus.RENEW_SEGMENTATION:
-            extra_processing.append(image)
-        else:
-            pass
 
-    gevent.spawn(insert_irrelevant_to_mongo, irrelevant)
-    gevent.spawn(add_col_or_renew_seg, extra_processing, products_collection)
+    images = [g_item.value for g_item in images_in_process
+              if g_item.value.status in
+              [IS.NEW_RELEVANT, IS.NEW_NOT_RELEVANT, IS.ADD_COLLECTION, IS.RENEW_SEGMENTATION]]
+
+    continue_processing(images, products_collection)
 
 
 def process_img(q, image, products_collection):
 
     if not image.type or image.type == 'data':  # TODO handle data images!!!!
-        q.put('{},{}'.format(image.url, image.status))
-        return image, ImageStatus.NOT_RELEVANT
+        q.put('{},{}'.format(image.url, False))
+        return image
 
-    image, enum_status = check_image_status(image, products_collection)
+    image.check_status(image, products_collection)
 
-    if enum_status == ImageStatus.NEW:
-        image = check_relevancy_and_enqueue(image, products_collection)
+    if image.status == IS.NEW_RELEVANT:
+        image.is_relevant()
 
     status = map_to_client[image.method][image.status]
     q.put('{},{}'.format(image.url, status))
@@ -73,9 +65,9 @@ class FalconServer:
         resp.set_header('Access-Control-Allow-Origin', "*")
 
         q = geventQueue()
-        q.put(' ' * 1024)
+        q.put('start!')
         images_in_process = [gevent.spawn(process_img, q, image, products_collection) for image in images]
-        gevent.spawn(stop_stream_when_ready, q, images_in_process)
+        gevent.spawn(stop_stream_when_ready, q, images_in_process, products_collection)
         resp.stream = q
 
         resp.status = falcon.HTTP_200

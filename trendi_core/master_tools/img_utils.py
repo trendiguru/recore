@@ -12,7 +12,11 @@ from functools import partial
 from jaweson import msgpack
 import Image
 from scipy import fftpack
+import collections
 
+# out libs
+from ..master_constants import db, ImageStatus, IMAGES_COLLECTION
+from ..api.tools import extra_processing
 
 detector = dlib.get_frontal_face_detector()
 logging.basicConfig(level=logging.WARNING)
@@ -257,3 +261,42 @@ def create_arbitrary_mask(image):
     mask[4 * sub_h:16 * sub_h, 3 * sub_w:7 * sub_w] = 3
     mask[7 * sub_h:13 * sub_h, 4 * sub_w:6 * sub_w] = 1
     return mask
+
+
+def image_is_relevant(image):
+    Relevance = collections.namedtuple('Relevance', ['is_relevant', 'faces'])
+    faces_dict = find_face_using_dlib(image, 4)
+
+    if not faces_dict['are_faces']:
+        return Relevance(False, [])
+    else:
+        return Relevance(True, faces_dict['faces'])
+
+
+def check_image_status(image, products_collection, images_collection=IMAGES_COLLECTION, segmentation_method=None):
+    image_obj = db[images_collection].find_one({'image_urls': image.url},
+                                               {'people.items.similar_results': 1})
+
+    if image_obj:
+        if products_collection in image_obj['people'][0]['items'][0]['similar_results'].keys():
+            status = ImageStatus.READY
+            if not segmentation_method:
+                if not has_sufficient_segmentation(image_obj, segmentation_method):
+                    status = ImageStatus.RENEW_SEGMENTATION
+        else:
+            status = ImageStatus.ADD_COLLECTION
+    elif db.iip.find_one({'image_urls': image.url}, {'_id': 1}):
+        status = ImageStatus.IN_PROGRESS
+    elif db.irrelevant_images.find_one({'image_urls': image.url}, {'_id': 1}):
+        status = ImageStatus.NOT_RELEVANT
+    else:
+        status = ImageStatus.NEW_RELEVANT
+
+    return status
+
+
+def has_sufficient_segmentation(image_obj, segmentation_method='pd'):
+    segmentation_method = segmentation_method
+    methods = [person['segmentation_method'] for person in image_obj['people']]
+    return all((method == segmentation_method for method in methods))
+
