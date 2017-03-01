@@ -301,3 +301,11 @@ def has_sufficient_segmentation(image_obj, segmentation_method='pd'):
     methods = [person['segmentation_method'] for person in image_obj['people']]
     return all((method == segmentation_method for method in methods))
 
+
+def data_url_to_cv2_img(url):
+    if url.startswith('data'):
+        url = url[4:]
+    nparr = np.fromstring(url.split(',')[1].decode('base64'), np.uint8)
+    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    return img
+

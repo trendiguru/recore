@@ -125,7 +125,8 @@ class TrendiImage(object):
     def url_sort(self):
         # Sorts image urls into "data", True (valid) or False (invalid)
         if self.url.startswith("data"):
-            self._data_array = self.url[4:]
-            self._type = 'data'
+            self._data_array = img_utils.data_url_to_cv2_img(self.url)
+            self._type = True
         else:
             self._type = all(list(urlparse(self.url))[:3])
+
