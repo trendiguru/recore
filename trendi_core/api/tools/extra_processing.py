@@ -5,7 +5,7 @@ from rq import push_connection, Queue
 
 # ours
 from ... import master_constants
-from ...master_constants import db, redis_conn, ImageStatus
+from ...master_constants import db, redis_conn, ImageStatus, IMAGES_COLLECTION
 
 
 push_connection(redis_conn)
@@ -24,24 +24,19 @@ def continue_processing(images, products_collection):
         if image.status == ImageStatus.ADD_COLLECTION:
             # TODO: change add results to be a generic componnent of the pipeline
             add_results.enqueue_call(func=page_results.add_results_from_collection,
-                                     args=(image_obj['_id'], products_collection),
+                                     args=(image.id, products_collection),
                                      ttl=2000, result_ttl=2000, timeout=2000)
 
         elif image.status == ImageStatus.RENEW_SEGMENTATION:
+            existing_obj = db[IMAGES_COLLECTION].find_one({'_id': image.id})
             image_obj = {'people': [{'person_id': person['_id'], 'face': person['face'],
-                                     'gender': person['gender']} for person in image_obj['people']],
+                                     'gender': person['gender']} for person in existing_obj['people']],
                          'image_urls': image.url, 'page_url': image.page_url, 'insert_time': datetime.datetime.now()}
             db.iip.insert_one(image_obj)
             start_pipeline.enqueue_call(func="", args=(image.page_url, image.url, products_collection, 'pd'),
                                         ttl=2000, result_ttl=2000, timeout=2000)
 
         else:
-
-            image.hash_it()
-            try:
-                image.label_it()
-            except:
-                pass
 
             image_obj = {'image_hash': image.hash, 'image_urls': [image.url], 'page_urls': [image.page_url], 'people': [],
                          'relevant': False, 'saved_date': str(datetime.datetime.utcnow()), 'views': 1,

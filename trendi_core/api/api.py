@@ -29,7 +29,7 @@ def stop_stream_when_ready(q, images_in_process, products_collection):
 
 def process_img(q, image, products_collection):
 
-    if not image.type or image.type == 'data':  # TODO handle data images!!!!
+    if not image.type:
         q.put('{},{}'.format(image.url, False))
         return image
 

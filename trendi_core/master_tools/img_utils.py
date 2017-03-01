@@ -16,7 +16,6 @@ import collections
 
 # out libs
 from ..master_constants import db, ImageStatus, IMAGES_COLLECTION
-from ..api.tools import extra_processing
 
 detector = dlib.get_frontal_face_detector()
 logging.basicConfig(level=logging.WARNING)
@@ -277,7 +276,9 @@ def check_image_status(image, products_collection, images_collection=IMAGES_COLL
     image_obj = db[images_collection].find_one({'image_urls': image.url},
                                                {'people.items.similar_results': 1})
 
+    _id = None
     if image_obj:
+        _id = image_obj['_id']
         if products_collection in image_obj['people'][0]['items'][0]['similar_results'].keys():
             status = ImageStatus.READY
             if not segmentation_method:
@@ -292,7 +293,7 @@ def check_image_status(image, products_collection, images_collection=IMAGES_COLL
     else:
         status = ImageStatus.NEW_RELEVANT
 
-    return status
+    return status, _id
 
 
 def has_sufficient_segmentation(image_obj, segmentation_method='pd'):
