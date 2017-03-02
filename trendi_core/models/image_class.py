@@ -49,17 +49,14 @@ class TrendiImage(object):
 
     @property
     def data_array(self):
-        if self._data_array is None:
-            self._data_array = img_utils.url_to_img_array(self.url)
-            if not self.is_valid:
+        self._data_array = img_utils.url_to_img_array(self.url)
+        if not self.is_valid:
                 logging.warning("image is None. url: {url}".format(url=self.url))
         return self._data_array
 
     @property
     def small_data_array(self):
-        if self._small_data_array is None:
-            self._small_data_array, _ = img_utils.standard_resize(self.data_array, 600)
-
+        self._small_data_array, _ = img_utils.standard_resize(self.data_array, 600)
         return self._small_data_array
 
     @property
@@ -85,14 +82,12 @@ class TrendiImage(object):
 
     @property
     def is_valid(self):
-        image_area = self.data_array.shape[0] * self.data_array.shape[1]
-        min_image_area = 400
-        if self.data_array is not None and \
-                isinstance(self.data_array, np.ndarray) and \
-                image_area >= min_image_area:
-            self._valid = True
-        else:
-            self._valid = False
+        self._valid = False
+        if self.data_array is not None:
+            image_area = self.data_array.shape[0] * self.data_array.shape[1]
+            min_image_area = 400
+            if isinstance(self.data_array, np.ndarray) and image_area >= min_image_area:
+                self._valid = True
 
         return self._valid
 

@@ -70,7 +70,7 @@ def path_to_img_array(img_path):
 
 
 def download_img_array(img_array, savename):
-    if any(savename.endswith(x) for x in ['.jpg','.jpeg','.bmp','.tiff']):
+    if any(savename.endswith(x) for x in ['.jpg', '.jpeg', '.bmp', '.tiff']):
         pass
     else:  # there's no 'normal' filename ending so add .jpg
         savename += '.jpg'
@@ -93,6 +93,9 @@ def download_img_url(img_url, savename):
 
 
 def standard_resize(image, max_side):
+    if image is None:
+        return None, 1
+
     original_h, original_w, _ = image.shape
     if all(side < max_side for side in [original_h, original_w]):
         return image, 1
@@ -111,6 +114,9 @@ def standard_resize(image, max_side):
 
 
 def hash_image(image):
+    if image is None:
+        return None
+
     m = hashlib.md5()
     m.update(image)
     url_hash = m.hexdigest()
@@ -130,6 +136,9 @@ def binary_array_to_hex(arr):
 
 
 def p_hash_image(image, hash_size=16, img_size=16):
+    if image is None:
+        return None
+
     image = Image.fromarray(image)
     image = image.convert("L").resize((img_size, img_size), Image.ANTIALIAS)
     pixels = np.array(image.getdata(), dtype=np.float).reshape((img_size, img_size))
@@ -224,6 +233,7 @@ def is_skin_color(face_ycrcb):
                 skin_pixels_count += 1
     return skin_pixels_count / float(total_pixels_count) > 0.33
 
+
 # TODO - update function to yonatan's newest version
 def score_face(face, image):
     image_height, image_width, _ = image.shape
@@ -239,6 +249,9 @@ def score_face(face, image):
 
 
 def create_mask_for_db(image):
+    if image is None:
+        return None
+
     rect = (0, 0, image.shape[1]-1, image.shape[0]-1)
     # this is  a cv2 initializing step as presented in the demo
     bgdmodel = np.zeros((1, 65), np.float64)
@@ -264,12 +277,13 @@ def create_arbitrary_mask(image):
 
 def image_is_relevant(image):
     Relevance = collections.namedtuple('Relevance', ['is_relevant', 'faces'])
-    faces_dict = find_face_using_dlib(image, 4)
+    if image is not None:
+        faces_dict = find_face_using_dlib(image, 4)
 
-    if not faces_dict['are_faces']:
-        return Relevance(False, [])
-    else:
-        return Relevance(True, faces_dict['faces'])
+        if faces_dict['are_faces']:
+            return Relevance(True, faces_dict['faces'])
+
+    return Relevance(False, [])
 
 
 def check_image_status(image, products_collection, images_collection=IMAGES_COLLECTION, segmentation_method=None):

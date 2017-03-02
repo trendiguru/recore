@@ -1,25 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5ff28eca-5109-4321-b26f-a72aab395cb6" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trendi_core/database/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trendi_core/database/downloaders/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trendi_core/database/downloaders/generic_dictionary.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trendi_core/database/downloaders/shopstyle/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trendi_core/database/downloaders/shopstyle/category_tree.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trendi_core/database/downloaders/shopstyle/constants.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trendi_core/database/downloaders/shopstyle/download.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trendi_core/master_tools/fp_utils.py" />
+    <list default="true" id="5ff28eca-5109-4321-b26f-a72aab395cb6" name="Default" comment="renewed parallel api">
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trendi_core/storm/__init__.py" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trendi_core/storm/topology.clj" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/trendi_core/master_tools/imgUtils.py" afterPath="$PROJECT_DIR$/trendi_core/master_tools/img_utils.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trendi_core/api/api.py" afterPath="$PROJECT_DIR$/trendi_core/api/api.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trendi_core/api/constants.py" afterPath="$PROJECT_DIR$/trendi_core/api/constants.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trendi_core/api/tools/status_and_relevancy.py" afterPath="$PROJECT_DIR$/trendi_core/api/tools/status_and_relevancy.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trendi_core/master_constants.py" afterPath="$PROJECT_DIR$/trendi_core/master_constants.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trendi_core/master_tools/img_utils.py" afterPath="$PROJECT_DIR$/trendi_core/master_tools/img_utils.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trendi_core/models/image_class.py" afterPath="$PROJECT_DIR$/trendi_core/models/image_class.py" />
     </list>
+    <ignored path=".idea/" />
+    <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -32,36 +22,36 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="api.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/trendi_core/api/api.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-805">
-              <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+            <state relative-caret-position="667">
+              <caret line="38" column="27" lean-forward="false" selection-start-line="38" selection-start-column="27" selection-end-line="38" selection-end-column="27" />
               <folding>
-                <element signature="e#38#51#0" expanded="true" />
+                <element signature="e#39#52#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="status_and_relevancy.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/trendi_core/api/tools/status_and_relevancy.py">
+      <file leaf-file-name="img_utils.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/trendi_core/master_tools/img_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1771">
-              <caret line="77" column="9" lean-forward="false" selection-start-line="77" selection-start-column="9" selection-end-line="77" selection-end-column="9" />
+            <state relative-caret-position="776">
+              <caret line="286" column="0" lean-forward="false" selection-start-line="286" selection-start-column="0" selection-end-line="286" selection-end-column="0" />
               <folding>
-                <element signature="e#14#29#0" expanded="true" />
+                <element signature="e#0#37#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="image_class.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="image_class.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/trendi_core/models/image_class.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="529">
-              <caret line="23" column="46" lean-forward="false" selection-start-line="23" selection-start-column="46" selection-end-line="23" selection-end-column="46" />
+            <state relative-caret-position="1702">
+              <caret line="74" column="46" lean-forward="true" selection-start-line="74" selection-start-column="46" selection-end-line="74" selection-end-column="46" />
               <folding>
                 <element signature="e#14#43#0" expanded="true" />
               </folding>
@@ -69,24 +59,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="master_constants.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/trendi_core/master_constants.py">
+      <file leaf-file-name="extra_processing.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/trendi_core/api/tools/extra_processing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="46">
-              <caret line="2" column="29" lean-forward="true" selection-start-line="2" selection-start-column="29" selection-end-line="2" selection-end-column="29" />
+            <state relative-caret-position="552">
+              <caret line="30" column="48" lean-forward="false" selection-start-line="30" selection-start-column="48" selection-end-line="30" selection-end-column="48" />
               <folding>
-                <element signature="e#0#9#0" expanded="true" />
+                <element signature="e#14#29#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="constants.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/trendi_core/api/constants.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -124,6 +104,8 @@
       <find>img_ut</find>
       <find>get_img</find>
       <find>fp_version</find>
+      <find>add_results</find>
+      <find>img</find>
     </findStrings>
     <replaceStrings>
       <replace>product</replace>
@@ -165,13 +147,14 @@
         <option value="$PROJECT_DIR$/trendi_core/database/downloaders/shopstyle/constants.py" />
         <option value="$PROJECT_DIR$/trendi_core/database/downloaders/shopstyle/download.py" />
         <option value="$PROJECT_DIR$/trendi_core/master_tools/fp_utils.py" />
-        <option value="$PROJECT_DIR$/trendi_core/master_tools/img_utils.py" />
         <option value="$PROJECT_DIR$/trendi_core/storm/topology.clj" />
-        <option value="$PROJECT_DIR$/trendi_core/api/constants.py" />
-        <option value="$PROJECT_DIR$/trendi_core/master_constants.py" />
-        <option value="$PROJECT_DIR$/trendi_core/models/image_class.py" />
         <option value="$PROJECT_DIR$/trendi_core/api/tools/status_and_relevancy.py" />
+        <option value="$PROJECT_DIR$/trendi_core/master_constants.py" />
+        <option value="$PROJECT_DIR$/trendi_core/api/constants.py" />
         <option value="$PROJECT_DIR$/trendi_core/api/api.py" />
+        <option value="$PROJECT_DIR$/trendi_core/api/tools/extra_processing.py" />
+        <option value="$PROJECT_DIR$/trendi_core/models/image_class.py" />
+        <option value="$PROJECT_DIR$/trendi_core/master_tools/img_utils.py" />
       </list>
     </option>
   </component>
@@ -197,6 +180,7 @@
     </navigator>
     <panes>
       <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -255,6 +239,24 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="master_tools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="recore" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="recore" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trendi_core" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="api" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -283,12 +285,11 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="settings.github" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../core" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Ignored.Files" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/.idea/workspace.xml" />
     <property name="editor.config.accepted" value="true" />
   </component>
   <component name="PyConsoleOptionsProvider">
@@ -504,7 +505,42 @@
       <option name="project" value="LOCAL" />
       <updated>1487499310929</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="renewed parallel api">
+      <created>1488288798771</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1488288798771</updated>
+    </task>
+    <task id="LOCAL-00006" summary="renewed parallel api">
+      <created>1488289135763</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1488289135763</updated>
+    </task>
+    <task id="LOCAL-00007" summary="renewed parallel api">
+      <created>1488379011987</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1488379011987</updated>
+    </task>
+    <task id="LOCAL-00008" summary="renewed parallel api">
+      <created>1488384929778</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1488384929778</updated>
+    </task>
+    <task id="LOCAL-00009" summary="renewed parallel api">
+      <created>1488385300454</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1488385300454</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TodoView">
@@ -562,10 +598,12 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="false" />
     <MESSAGE value="2nd commit" />
     <MESSAGE value="api commit" />
     <MESSAGE value="gitignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="gitignore" />
+    <MESSAGE value="renewed parallel api" />
+    <option name="LAST_COMMIT_MESSAGE" value="renewed parallel api" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -574,6 +612,50 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/trendi_core/api/tools/extra_processing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#14#29#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trendi_core/models/image_class.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="23" column="46" lean-forward="false" selection-start-line="23" selection-start-column="46" selection-end-line="23" selection-end-column="46" />
+          <folding>
+            <element signature="e#14#43#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trendi_core/master_constants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="437">
+          <caret line="21" column="34" lean-forward="false" selection-start-line="21" selection-start-column="34" selection-end-line="21" selection-end-column="34" />
+          <folding>
+            <element signature="e#0#9#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trendi_core/api/constants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trendi_core/trendi_core.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/trendi_core/database/downloaders/shopstyle/constants.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="23">
@@ -611,7 +693,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trendi_core/api/tools/status_and_relevancy.py">
+    <entry file="file://$PROJECT_DIR$/trendi_core/api/tools/extra_processing.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1058">
           <caret line="53" column="35" lean-forward="false" selection-start-line="53" selection-start-column="35" selection-end-line="53" selection-end-column="35" />
@@ -640,7 +722,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trendi_core/api/tools/status_and_relevancy.py">
+    <entry file="file://$PROJECT_DIR$/trendi_core/api/tools/extra_processing.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1058">
           <caret line="53" column="35" lean-forward="false" selection-start-line="53" selection-start-column="35" selection-end-line="53" selection-end-column="35" />
@@ -669,7 +751,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trendi_core/api/tools/status_and_relevancy.py">
+    <entry file="file://$PROJECT_DIR$/trendi_core/api/tools/extra_processing.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1058">
           <caret line="53" column="35" lean-forward="false" selection-start-line="53" selection-start-column="35" selection-end-line="53" selection-end-column="35" />
@@ -698,7 +780,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trendi_core/api/tools/status_and_relevancy.py">
+    <entry file="file://$PROJECT_DIR$/trendi_core/api/tools/extra_processing.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1058">
           <caret line="53" column="35" lean-forward="false" selection-start-line="53" selection-start-column="35" selection-end-line="53" selection-end-column="35" />
@@ -726,7 +808,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trendi_core/api/tools/status_and_relevancy.py">
+    <entry file="file://$PROJECT_DIR$/trendi_core/api/tools/extra_processing.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="138">
           <caret line="6" column="6" lean-forward="true" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
@@ -741,13 +823,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/trendi_core/api/tools/image_status.py" />
-    <entry file="file://$PROJECT_DIR$/trendi_core/api/tools/route.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="92">
-          <caret line="4" column="43" lean-forward="true" selection-start-line="4" selection-start-column="43" selection-end-line="4" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="790">
@@ -767,13 +842,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="138">
           <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/trendi_core/master_tools/img_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="261">
-          <caret line="236" column="0" lean-forward="false" selection-start-line="236" selection-start-column="0" selection-end-line="236" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -809,55 +877,77 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="207">
           <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trendi_core/api/api.py">
+    <entry file="file://$PROJECT_DIR$/trendi_core/trendi_core.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-805">
-          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-          <folding>
-            <element signature="e#38#51#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trendi_core/api/tools/status_and_relevancy.py">
+    <entry file="file://$PROJECT_DIR$/trendi_core/api/tools/extra_processing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1771">
-          <caret line="77" column="9" lean-forward="false" selection-start-line="77" selection-start-column="9" selection-end-line="77" selection-end-column="9" />
+        <state relative-caret-position="552">
+          <caret line="30" column="48" lean-forward="false" selection-start-line="30" selection-start-column="48" selection-end-line="30" selection-end-column="48" />
           <folding>
             <element signature="e#14#29#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trendi_core/models/image_class.py">
+    <entry file="file://$PROJECT_DIR$/trendi_core/api/tools/route.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="529">
-          <caret line="23" column="46" lean-forward="false" selection-start-line="23" selection-start-column="46" selection-end-line="23" selection-end-column="46" />
-          <folding>
-            <element signature="e#14#43#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="23">
+          <caret line="4" column="43" lean-forward="false" selection-start-line="4" selection-start-column="43" selection-end-line="4" selection-end-column="43" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/trendi_core/master_constants.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="46">
-          <caret line="2" column="29" lean-forward="true" selection-start-line="2" selection-start-column="29" selection-end-line="2" selection-end-column="29" />
+        <state relative-caret-position="575">
+          <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
           <folding>
-            <element signature="e#0#9#0" expanded="true" />
+            <element signature="e#0#9#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/trendi_core/api/constants.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="46">
+          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trendi_core/api/api.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="667">
+          <caret line="38" column="27" lean-forward="false" selection-start-line="38" selection-start-column="27" selection-end-line="38" selection-end-column="27" />
+          <folding>
+            <element signature="e#39#52#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trendi_core/master_tools/img_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="776">
+          <caret line="286" column="0" lean-forward="false" selection-start-line="286" selection-start-column="0" selection-end-line="286" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trendi_core/models/image_class.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1702">
+          <caret line="74" column="46" lean-forward="true" selection-start-line="74" selection-start-column="46" selection-end-line="74" selection-end-column="46" />
+          <folding>
+            <element signature="e#14#43#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
