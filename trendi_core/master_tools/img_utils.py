@@ -286,18 +286,17 @@ def image_is_relevant(image):
     return Relevance(False, [])
 
 
-def check_image_status(image, products_collection, images_collection=IMAGES_COLLECTION, segmentation_method=None):
+def check_image_status(image, images_collection=IMAGES_COLLECTION):
     image_obj = db[images_collection].find_one({'image_urls': image.url},
                                                {'people.items.similar_results': 1})
 
     _id = None
     if image_obj:
         _id = image_obj['_id']
-        if products_collection in image_obj['people'][0]['items'][0]['similar_results'].keys():
+        if image.products_collection in image_obj['people'][0]['items'][0]['similar_results'].keys():
             status = ImageStatus.READY
-            if not segmentation_method:
-                if not has_sufficient_segmentation(image_obj, segmentation_method):
-                    status = ImageStatus.RENEW_SEGMENTATION
+            if not has_sufficient_segmentation(image_obj, image.segmentation_method):
+                status = ImageStatus.RENEW_SEGMENTATION
         else:
             status = ImageStatus.ADD_COLLECTION
     elif db.iip.find_one({'image_urls': image.url}, {'_id': 1}):

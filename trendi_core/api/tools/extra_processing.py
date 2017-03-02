@@ -17,14 +17,14 @@ LABEL_ADDRESS = "http://37.58.101.173:8357/neural/label"
 
 
 # TODO: this function needs to be reviewed again
-def continue_processing(images, products_collection):
+def continue_processing(images):
 
     for image in images:
 
         if image.status == ImageStatus.ADD_COLLECTION:
             # TODO: change add results to be a generic componnent of the pipeline
             add_results.enqueue_call(func=page_results.add_results_from_collection,
-                                     args=(image.id, products_collection),
+                                     args=image,
                                      ttl=2000, result_ttl=2000, timeout=2000)
 
         elif image.status == ImageStatus.RENEW_SEGMENTATION:
@@ -33,7 +33,8 @@ def continue_processing(images, products_collection):
                                      'gender': person['gender']} for person in existing_obj['people']],
                          'image_urls': image.url, 'page_url': image.page_url, 'insert_time': datetime.datetime.now()}
             db.iip.insert_one(image_obj)
-            start_pipeline.enqueue_call(func="", args=(image.page_url, image.url, products_collection, 'pd'),
+            image.segmentation_method = 'pd'
+            start_pipeline.enqueue_call(func="", args=image,
                                         ttl=2000, result_ttl=2000, timeout=2000)
 
         else:
@@ -50,12 +51,10 @@ def continue_processing(images, products_collection):
                 db.iip.insert_one(image_obj)
 
                 if image.segmentation_method == 'pd':
-                    start_pipeline.enqueue_call(func="", args=(image.page_url, image.url,
-                                                               products_collection, image.segmentation_method),
+                    start_pipeline.enqueue_call(func="", args=image,
                                                 ttl=2000, result_ttl=2000, timeout=2000)
                 else:
-                    start_synced_pipeline.enqueue_call(func="", args=(image.page_url, image.url,
-                                                                      products_collection, 'nd'),
+                    start_synced_pipeline.enqueue_call(func="", args=image,
                                                        ttl=2000, result_ttl=2000, timeout=2000)
 
             else:

@@ -15,7 +15,7 @@ from .constants import map_to_client
 application = falcon.API()
 
 
-def stop_stream_when_ready(q, images_in_process, products_collection):
+def stop_stream_when_ready(q, images_in_process):
 
     gevent.joinall(images_in_process)
     q.put(StopIteration)
@@ -24,16 +24,16 @@ def stop_stream_when_ready(q, images_in_process, products_collection):
               if g_item.value.status in
               [IS.NEW_RELEVANT, IS.NEW_NOT_RELEVANT, IS.ADD_COLLECTION, IS.RENEW_SEGMENTATION]]
 
-    continue_processing(images, products_collection)
+    continue_processing(images)
 
 
-def process_img(q, image, products_collection):
+def process_img(q, image):
 
     if not image.type:
         q.put('{},{}'.format(image.url, False))
         return image
 
-    image.check_status(image, products_collection)
+    image.check_status(image)
 
     if image.status == IS.NEW_RELEVANT:
         image.is_relevant()
@@ -59,15 +59,15 @@ class FalconServer:
 
         # Catch the case where user provided image url instead of list
         image_url_list = image_url_list if isinstance(image_url_list, list) else [image_url_list]
-        images = [TrendiImage(image_url, page_url, method) for image_url in image_url_list]
+        images = [TrendiImage(image_url, page_url, method, products_collection) for image_url in image_url_list]
 
         resp.content_type = 'text/html'
         resp.set_header('Access-Control-Allow-Origin', "*")
 
         q = geventQueue()
         q.put('start!')
-        images_in_process = [gevent.spawn(process_img, q, image, products_collection) for image in images]
-        gevent.spawn(stop_stream_when_ready, q, images_in_process, products_collection)
+        images_in_process = [gevent.spawn(process_img, q, image) for image in images]
+        gevent.spawn(stop_stream_when_ready, q, images_in_process)
         resp.stream = q
 
         resp.status = falcon.HTTP_200

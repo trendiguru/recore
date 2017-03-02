@@ -10,7 +10,7 @@ from ..master_constants import ImageStatus, IMAGES_COLLECTION
 
 class TrendiImage(object):
 
-    def __init__(self, url, page_url=None, method=None):
+    def __init__(self, url, page_url=None, method=None, products_collection=None):
         self._url = url
         self._page_url = page_url
         self._type = False
@@ -23,8 +23,9 @@ class TrendiImage(object):
         self._status = ImageStatus.IRRELEVANT
         self._valid = True
         self._id = None
+        self._products_collection = products_collection
+        self._segmentation_method = method
         self.faces = []
-        self.segmentation_method = method
         self.url_sort()
 
     @property
@@ -111,8 +112,20 @@ class TrendiImage(object):
     def id(self, value):
         self._id = value
 
-    def check_status(self, products_collection, images_collection=IMAGES_COLLECTION, segmentation_method=None):
-        status, _id = (img_utils.check_image_status(self, products_collection, images_collection, segmentation_method))
+    @property
+    def products_collection(self):
+        return self._products_collection
+
+    @property
+    def segmentation_method(self):
+        return self._segmentation_method
+
+    @segmentation_method.setter
+    def segmentation_method(self, value):
+        self._segmentation_method = value
+
+    def check_status(self, images_collection=IMAGES_COLLECTION):
+        status, _id = (img_utils.check_image_status(self, images_collection))
         self.status(status)
         self.id(_id)
         return self.status
