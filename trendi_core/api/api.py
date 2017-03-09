@@ -5,42 +5,11 @@ import falcon
 import gevent
 from gevent.queue import Queue as geventQueue
 from bson import json_util
+
+# our libs
 from ..models.image_class import TrendiImage
-from ..master_constants import ImageStatus as IS
-from .tools import route
-from .tools.extra_processing import continue_processing
-from .constants import map_to_client
-
-
+from .tools.api_tools import process_img, stop_stream_when_ready
 application = falcon.API()
-
-
-def stop_stream_when_ready(q, images_in_process):
-
-    gevent.joinall(images_in_process)
-    q.put(StopIteration)
-
-    images = [g_item.value for g_item in images_in_process
-              if g_item.value.status in
-              [IS.NEW_RELEVANT, IS.NEW_NOT_RELEVANT, IS.ADD_COLLECTION, IS.RENEW_SEGMENTATION]]
-
-    continue_processing(images)
-
-
-def process_img(q, image):
-
-    if not image.type:
-        q.put('{},{}'.format(image.url, False))
-        return image
-
-    image.check_status(image)
-
-    if image.status == IS.NEW_RELEVANT:
-        image.is_relevant()
-
-    status = map_to_client[image.method][image.status]
-    q.put('{},{}'.format(image.url, status))
-    return image
 
 
 class FalconServer:
@@ -49,9 +18,9 @@ class FalconServer:
 
     def on_post(self, req, resp):
 
-        method = req.get_param("method") or 'nd'
+        desired_segmentation = req.get_param("method") or 'nd' # TODO move the method from here!!!
         pid = req.get_param("pid") or 'default'
-        products_collection = route.get_collection_from_ip_and_pid(req.env['REMOTE_ADDR'], pid)
+        addr = req.env['REMOTE_ADDR']
 
         data = json_util.loads(req.stream.read())
         page_url = data.get("pageUrl", "NO_PAGE")
@@ -59,7 +28,8 @@ class FalconServer:
 
         # Catch the case where user provided image url instead of list
         image_url_list = image_url_list if isinstance(image_url_list, list) else [image_url_list]
-        images = [TrendiImage(image_url, page_url, method, products_collection) for image_url in image_url_list]
+        images = [TrendiImage(image_url, page_url, desired_segmentation, page_id=pid, addr=addr)
+                  for image_url in image_url_list]
 
         resp.content_type = 'text/html'
         resp.set_header('Access-Control-Allow-Origin', "*")

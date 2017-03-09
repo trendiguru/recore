@@ -15,7 +15,6 @@ from scipy import fftpack
 import collections
 
 # out libs
-from ..master_constants import db, ImageStatus, IMAGES_COLLECTION
 
 detector = dlib.get_frontal_face_detector()
 logging.basicConfig(level=logging.WARNING)
@@ -284,35 +283,6 @@ def image_is_relevant(image):
             return Relevance(True, faces_dict['faces'])
 
     return Relevance(False, [])
-
-
-def check_image_status(image, images_collection=IMAGES_COLLECTION):
-    image_obj = db[images_collection].find_one({'image_urls': image.url},
-                                               {'people.items.similar_results': 1})
-
-    _id = None
-    if image_obj:
-        _id = image_obj['_id']
-        if image.products_collection in image_obj['people'][0]['items'][0]['similar_results'].keys():
-            status = ImageStatus.READY
-            if not has_sufficient_segmentation(image_obj, image.segmentation_method):
-                status = ImageStatus.RENEW_SEGMENTATION
-        else:
-            status = ImageStatus.ADD_COLLECTION
-    elif db.iip.find_one({'image_urls': image.url}, {'_id': 1}):
-        status = ImageStatus.IN_PROGRESS
-    elif db.irrelevant_images.find_one({'image_urls': image.url}, {'_id': 1}):
-        status = ImageStatus.NOT_RELEVANT
-    else:
-        status = ImageStatus.NEW_RELEVANT
-
-    return status, _id
-
-
-def has_sufficient_segmentation(image_obj, segmentation_method='pd'):
-    segmentation_method = segmentation_method
-    methods = [person['segmentation_method'] for person in image_obj['people']]
-    return all((method == segmentation_method for method in methods))
 
 
 def data_url_to_cv2_img(url):
